@@ -1,0 +1,57 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+entity DigiClock is
+	
+	port(
+		clock : in std_logic;
+		sec	: out integer;
+		min	: out integer;
+		hour	: out integer);
+		
+end DigiClock;
+
+architecture arch_DigiClock of DigiClock is
+
+signal sec_sig		: integer := 12;
+signal min_sig		: integer := 11;
+signal hour_sig	: integer := 1;
+signal cycle	: integer := 0;
+
+begin
+
+	process (clock, cycle, sec_sig, min_sig, hour_sig)
+	begin
+		
+		sec <= sec_sig;
+		min <= min_sig;
+		hour <= hour_sig;
+		
+		if (rising_edge(clock)) then
+			
+			cycle <= cycle + 1;
+		
+				if (cycle = 1) then	--anggapan 10 cycle untuk timer 1 detik
+					cycle <= 0;
+					sec_sig <= sec_sig + 1;
+				if (sec_sig = 59) then
+					min_sig <= min_sig + 1;
+					sec_sig <= 0;
+				end if;
+			
+				if (min_sig = 59) then
+					hour_sig <= hour_sig + 1;
+					min_sig  <= 0;	
+				end if;
+			
+				if (hour_sig > 23) then
+					hour_sig <= 0;		
+				end if;
+		
+			end if;	
+		end if;
+		
+	end process;
+	
+end arch_DigiClock;
